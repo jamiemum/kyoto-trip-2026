@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>京都行程 7/15–7/19</title>
+<style>
+  :root{
+    --bg:#f6f1e7;
+    --card:#fffdf9;
+    --ink:#242236;
+    --ink-soft:#5b5770;
+    --accent:#b1443e;
+    --accent-soft:#e8c9c2;
+    --line:#e6dcc8;
+    --green:#6f8560;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Noto Sans TC","Hiragino Sans","PingFang TC",system-ui,-apple-system,sans-serif;
+    line-height:1.6;
+    padding-bottom:60px;
+  }
+  .hero{
+    background:linear-gradient(160deg,#242236,#3a3457);
+    color:#fdf8ef;
+    padding:36px 20px 28px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at 15% 20%, rgba(177,68,62,0.35), transparent 40%),
+               radial-gradient(circle at 85% 80%, rgba(111,133,96,0.3), transparent 45%);
+  }
+  .hero-inner{position:relative;z-index:1;}
+  .hero .eyebrow{
+    font-size:13px;
+    letter-spacing:2px;
+    opacity:0.75;
+    margin-bottom:6px;
+  }
+  .hero h1{
+    margin:0 0 8px;
+    font-size:28px;
+    letter-spacing:1px;
+  }
+  .hero .dates{
+    font-size:15px;
+    opacity:0.85;
+  }
+  .controls{
+    max-width:720px;
+    margin:20px auto 8px;
+    padding:0 16px;
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+  }
+  .controls button{
+    border:1px solid var(--line);
+    background:var(--card);
+    color:var(--ink-soft);
+    font-size:13px;
+    padding:6px 14px;
+    border-radius:20px;
+    cursor:pointer;
+    transition:background 0.2s, color 0.2s;
+  }
+  .controls button:hover{
+    background:var(--ink);
+    color:#fff;
+    border-color:var(--ink);
+  }
+  main{
+    max-width:720px;
+    margin:0 auto;
+    padding:8px 16px 0;
+  }
+  .timeline{
+    position:relative;
+  }
+  .day-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    margin-bottom:14px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(36,34,54,0.05);
+  }
+  .day-header{
+    width:100%;
+    background:none;
+    border:none;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:16px 18px;
+    text-align:left;
+    cursor:pointer;
+    font:inherit;
+    color:inherit;
+  }
+  .date-badge{
+    flex:0 0 auto;
+    width:56px;
+    height:56px;
+    border-radius:14px;
+    background:var(--accent-soft);
+    color:var(--accent);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+  }
+  .date-badge .md{font-size:16px;line-height:1.1;}
+  .date-badge .wd{font-size:11px;opacity:0.8;font-weight:500;}
+  .day-title-wrap{flex:1 1 auto;min-width:0;}
+  .day-title-wrap h2{
+    margin:0 0 3px;
+    font-size:17px;
+  }
+  .summary-line{
+    margin:0;
+    font-size:13px;
+    color:var(--ink-soft);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .chevron{
+    flex:0 0 auto;
+    font-size:14px;
+    color:var(--ink-soft);
+    transition:transform 0.25s ease;
+  }
+  .day-card.open .chevron{transform:rotate(180deg);}
+  .day-content{
+    display:grid;
+    grid-template-rows:0fr;
+    transition:grid-template-rows 0.3s ease;
+  }
+  .day-card.open .day-content{grid-template-rows:1fr;}
+  .day-content-inner{
+    overflow:hidden;
+    min-height:0;
+  }
+  .detail-list{
+    list-style:none;
+    margin:0;
+    padding:0 18px 6px 18px;
+    border-top:1px solid var(--line);
+    padding-top:14px;
+  }
+  .detail-list li{
+    display:flex;
+    gap:12px;
+    padding:8px 0;
+    font-size:14px;
+    align-items:flex-start;
+  }
+  .detail-list .time{
+    flex:0 0 58px;
+    font-weight:600;
+    color:var(--accent);
+    font-size:13px;
+    padding-top:1px;
+  }
+  .detail-list .icon{
+    flex:0 0 22px;
+    text-align:center;
+  }
+  .detail-list .text{flex:1 1 auto;}
+  .detail-list .text b{display:block;font-size:14px;}
+  .detail-list .text a{
+    color:var(--ink);
+    text-decoration:underline;
+    text-decoration-color:var(--accent-soft);
+    text-decoration-thickness:1.5px;
+    text-underline-offset:2px;
+  }
+  .detail-list .text a:hover{color:var(--accent);}
+  .detail-list .text a::after{
+    content:"↗";
+    font-size:10px;
+    margin-left:3px;
+    color:var(--accent);
+  }
+  .detail-list .text span.note{
+    display:block;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-top:2px;
+  }
+  .hotel-footer{
+    margin:6px 18px 16px;
+    padding:12px 14px;
+    background:#f4efe4;
+    border-radius:10px;
+    font-size:13.5px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .hotel-footer .icon{font-size:16px;}
+  footer{
+    max-width:720px;
+    margin:24px auto 0;
+    padding:0 16px;
+    text-align:center;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">KYOTO TRIP</div>
+    <h1>京都五日行</h1>
+    <div class="dates">2026 / 7 / 15（二） – 7 / 19（日）</div>
+  </div>
+</div>
+
+<div class="controls">
+  <button id="expandAllBtn">全部展開</button>
+  <button id="collapseAllBtn">全部收合</button>
+</div>
+
+<main>
+  <div class="timeline">
+
+    <!-- Day 1 -->
+    <section class="day-card">
+      <button class="day-header">
+        <div class="date-badge"><span class="md">7/15</span><span class="wd">二</span></div>
+        <div class="day-title-wrap">
+          <h2>抵達京都</h2>
+          <p class="summary-line">TPE→KIX ･ 高木珈琲早餐 ･ 二条城 ･ 百萬遍手づくり市 ･ 岡崎 ･ 陶板名画庭 ･ 東洋亭晚餐</p>
+        </div>
+        <span class="chevron">⌾</span>
+      </button>
+      <div class="day-content">
+        <div class="day-content-inner">
+          <ul class="detail-list">
+            <li>
+              <span class="time">02:30</span>
+              <span class="icon">✈️</span>
+              <span class="text"><b>TPE 出發 → 06:05 抵達 KIX</b></span>
+            </li>
+            <li>
+              <span class="time">約06:30</span>
+              <span class="icon">🚌</span>
+              <span class="text"><b><a href="https://www.kate.co.jp/kyoto/" target="_blank" rel="noopener">利木津巴士（KIX → 京都站）</a></b><span class="note">實際發車時間依現場時刻表，建議搭最大車搭到京都站置物再輕裝過一整天</span></span>
+            </li>
+            <li>
+              <span class="time">約09:00</span>
+              <span class="icon">☕</span>
+              <span class="text"><b><a href="https://tabelog.com/tw/kyoto/A2601/A260201/26005195/" target="_blank" rel="noopener">高木珈琲 高辻本店</a></b><span class="note">下京區高辻通烏丸西邊，近地下鐵烏丸線步行4分鐘，1976年創業，早餐套餐，自家烘焙，07:00–19:00（週末至18:00）</span></span>
+            </li>
+            <li>
+              <span class="time">約10:15</span>
+              <span class="icon">🚇</span>
+              <span class="text"><b>移動：烏丸 → 二条城</b><span class="note">地鐵約15分鐘</span></span>
+            </li>
+            <li>
+              <span class="time">約10:30</span>
+              <span class="icon">🏯</span>
+              <span class="text"><b><a href="https://nijo-jocastle.city.kyoto.lg.jp/" target="_blank" rel="noopener">二条城</a></b><span class="note">世界遺產，開放 08:45–16:00（閉園17:00），參觀二之丸御殿，庭院約需 1.5 小時</span></span>
+            </li>
+            <li>
+              <span class="time">約12:00</span>
+              <span class="icon">🚇</span>
+              <span class="text"><b>移動：二条城 → 百萬遍</b><span class="note">地鐵轉乘，約 30 分鐘</span></span>
+            </li>
+            <li>
+              <span class="time">約12:30</span>
+              <span class="icon">🛍</span>
+              <span class="text"><b><a href="https://i-made-it.jp/event/hyakumanben_handmade_market/" target="_blank" rel="noopener">百萬遍手づくり市</a></b><span class="note">左京區田中門前町，知恩寺境內，每月15日舉辦，剛好是 7/15 當天，10:00–16:00，留約 1 小時，記得在 16:00 收攤前離開</span></span>
+            </li>
+            <li>
+              <span class="time">約13:30</span>
+              <span class="icon">🚇</span>
+              <span class="text"><b>移動：百萬遍 → 岡崎</b><span class="note">兩地都在左京區，距離很近，約 15 分鐘</span></span>
+            </li>
+            <li>
+              <span class="time">約13:45</span>
+              <span class="icon">📚</span>
+              <span class="text"><b><a href="https://store.tsite.jp/kyoto-okazaki/" target="_blank" rel="noopener">京都岡崎 蔦屋書店</a></b><span class="note">左京區岡崎公園內，近年開幕的大型藝文複合書店，毗鄰平安神宮</span></span>
+            </li>
+            <li>
+              <span class="time">約14:30</span>
+              <span class="icon">🖼</span>
+              <span class="text"><b><a href="https://kyotocity-kyocera.museum/" target="_blank" rel="noopener">京都市京セラ美術館</a></b><span class="note">岡崎公園內，2020年整修開館，老建築新體驗，就在蔦屋書店旁</span></span>
+            </li>
+            <li>
+              <span class="time">約15:15</span>
+              <span class="icon">🚇</span>
+              <span class="text"><b>移動：岡崎 → 北山</b><span class="note">地鐵約 25–30 分鐘</span></span>
+            </li>
+            <li>
+              <span class="time">約15:45</span>
+              <span class="icon">🎨</span>
+              <span class="text"><b><a href="https://kyoto-toban-hp.or.jp/" target="_blank" rel="noopener">京都府立陶板名画の庭</a></b><span class="note">安藤忠雄設計的戶外美術館，就在京都府立植物園北山門旁；門票100円，9:00–17:00（最後入場16:30），記得在16:30前入場，逛約45分鐘</span></span>
+            </li>
+            <li>
+              <span class="time">約18:30</span>
+              <span class="icon">🍽</span>
+              <span class="text"><b><a href="https://www.touyoutei.co.jp/shop_post/honten/" target="_blank" rel="noopener">東洋亭 本店（北山）</a></b><span class="note">北山一帶岩石庭園風格，京都府立植物園北山門旁，地鐵北山站步行3分鐘，招牌漢堡肉整顆蕃茄，11:00–22:00（L.O.21:00）。16:30–18:30 空檔可在植物園在植物園散步當作休息</span></span>
+            </li>
+          </ul>
+          <div class="hotel-footer"><span class="icon">🏨</span> 住宿：Mystays Kyoto Shijo Hotel</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Day 2 -->
+    <section class="day-card">
+      <button class="day-header">
+        <div class="date-badge"><span class="md">7/16</span><span class="wd">三</span></div>
+        <div class="day-title-wrap">
+          <h2>飛奔滋賀大自然</h2>
+          <p class="summary-line">進進堂早餐 ･ 白鬚神社 ･ 琵琶湖景觀台 ･ 滿月寺浮御堂 ･ La Collina</p>
+        </div>
+        <span class="chevron">⌾</span>
+      </button>
+      <div class="day-content">
+        <div class="day-content-inner">
+          <ul class="detail-list">
+            <li>
+              <span class="time">約08:00</span>
+              <span class="icon">🥐</span>
+              <span class="text"><b>進進堂 四条烏丸店</b><span class="note">LAQUE四条烏丸 B1F，緊鄰地鐵四条站直結，08:00–20:30，麵包量多，預約早餐後步行，地鐵到京都站八條口約20分鐘，時間剛好配09:05開車</span></span>
+            </li>
+            <li>
+              <span class="time">09:05</span>
+              <span class="icon">🚌</span>
+              <span class="text"><b><a href="https://www.kkday.com/zh-tw/product/196165" target="_blank" rel="noopener">團體出發（KKday 琵琶湖一日遊）</a></b><span class="note">京都站八條口，站前巴士停車場，09:20 出發）</span></span>
+            </li>
+            <li>
+              <span class="time">10:20</span>
+              <span class="icon">⛩</span>
+              <span class="text"><b><a href="https://ja.wikipedia.org/wiki/白鬚神社_(高島市)" target="_blank" rel="noopener">白鬚神社</a></b><span class="note">湖中鳥居，約 30 分鐘</span></span>
+            </li>
+            <li>
+              <span class="time">11:30</span>
+              <span class="icon">🏡</span>
+              <span class="text"><b><a href="https://biwako-valley.com/" target="_blank" rel="noopener">琵琶湖景觀台（琵琶湖Terrace）</a></b><span class="note">搭纜車登山，360度琵琶湖絕景，約 2 小時，纜車票自費）</span></span>
+            </li>
+            <li>
+              <span class="time">14:00</span>
+              <span class="icon">🏯</span>
+              <span class="text"><b>滿月寺浮御堂</b><span class="note">湖上佛堂，約 50 分鐘</span></span>
+            </li>
+            <li>
+              <span class="time">15:30</span>
+              <span class="icon">🍰</span>
+              <span class="text"><b><a href="https://taneya.jp/la_collina/" target="_blank" rel="noopener">La Collina 近江八幡</a></b><span class="note">藤森照信的點心店，四季年輪蛋糕，約 1 小時</span></span>
+            </li>
+            <li>
+              <span class="time">17:40</span>
+              <span class="icon">🚌</span>
+              <span class="text"><b>返回京都站八條口</b><span class="note">實際時間依當天路況調整</span></span>
+            </li>
+          </ul>
+          <div class="hotel-footer"><span class="icon">🏨</span> 住宿：Mystays Kyoto Shijo Hotel</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Day 3 -->
+    <section class="day-card">
+      <button class="day-header">
+        <div class="date-badge"><span class="md">7/17</span><span class="wd">四</span></div>
+        <div class="day-title-wrap">
+          <h2>祇園祭盛夏特輯</h2>
+          <p class="summary-line">前田珈琲早餐 ･ 祇園祭 ･ 寺町藝文街道 ･ 然花抄院下午茶</p>
+        </div>
+        <span class="chevron">⌾</span>
+      </button>
+      <div class="day-content">
+        <div class="day-content-inner">
+          <ul class="detail-list">
+            <li>
+              <span class="time">約08:00</span>
+              <span class="icon">☕</span>
+              <span class="text"><b><a href="https://www.maedacoffee.com/shopinfo/koudaiji/" target="_blank" rel="noopener">前田珈琲 高台寺店</a></b><span class="note">東山區下河原通東入鳥居前，就在高台寺，八坂神社旁，07:00–18:00（L.O.17:30），預約早餐直接走去祇園祭範圍，順路</span></span>
+            </li>
+            <li>
+              <span class="time">白天</span>
+              <span class="icon">🎮</span>
+              <span class="text"><b><a href="https://www.gionmatsuri.or.jp/" target="_blank" rel="noopener">祇園祭</a></b></span>
+            </li>
+            <li>
+              <span class="time">約13:30</span>
+              <span class="icon">🏪</span>
+              <span class="text"><b>寺町藝文街道</b><span class="note">寺町通中段，三条至御池間，古書店、藝廊、古玩家居店，從祇園沿河原逛過去走即可抵達</span></span>
+            </li>
+            <li>
+              <span class="time">約15:30</span>
+              <span class="icon">🍵</span>
+              <span class="text"><b><a href="https://zen-kashoin.com/muromachistore/" target="_blank" rel="noopener">然花抄院 京都室町本店</a></b><span class="note">中京區室町通二条，為老屋改建的和菓子茶寮，11:00–19:00，從寺町通往西走約10分鐘，正好完美下午茶</span></span>
+            </li>
+          </ul>
+          <div class="hotel-footer"><span class="icon">🏨</span> 住宿：Richmond Premier Hotel Kyoto Shijo</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Day 4 -->
+    <section class="day-card">
+      <button class="day-header">
+        <div class="date-badge"><span class="md">7/18</span><span class="wd">五</span></div>
+        <div class="day-title-wrap">
+          <h2>探索日本三景</h2>
+          <p class="summary-line">美山茅草屋 ･ 天橋立 ･ 伊根漁村</p>
+        </div>
+        <span class="chevron">⌾</span>
+      </button>
+      <div class="day-content">
+        <div class="day-content-inner">
+          <ul class="detail-list">
+            <li>
+              <span class="time">07:45</span>
+              <span class="icon">🚌</span>
+              <span class="text"><b><a href="https://www.kkday.com/zh-tw/product/162588" target="_blank" rel="noopener">團體出發（KKday 京都秘境一日遊）</a></b><span class="note">京都 AVANTI（烏丸七条），集合點，08:00 準時出發</span></span>
+            </li>
+            <li>
+              <span class="time">約09:30</span>
+              <span class="icon">⛵</span>
+              <span class="text"><b><a href="https://www.ine-kankou.jp/" target="_blank" rel="noopener">伊根灣遊覽船</a></b><span class="note">近距離欣賞舟屋、餵食海鷗，約 60 分鐘（時間依車程調整）</span></span>
+            </li>
+            <li>
+              <span class="time">約10:30</span>
+              <span class="icon">🚶</span>
+              <span class="text"><b>伊根灣小鎮漫步</b><span class="note">伊根公路全程，近距離欣賞舟屋建築</span></span>
+            </li>
+            <li>
+              <span class="time">11:20</span>
+              <span class="icon">🏡</span>
+              <span class="text"><b><a href="https://www.amanohashidate.jp/" target="_blank" rel="noopener">天橋立（股覧）</a></b><span class="note">自費登山纜車，翻轉仰望景點，約 120 分鐘</span></span>
+            </li>
+            <li>
+              <span class="time">約14:30</span>
+              <span class="icon">🏡</span>
+              <span class="text"><b><a href="https://kayabukinosato.jp/" target="_blank" rel="noopener">美山茅草屋聚落</a></b><span class="note">自由參觀約 50 分鐘（時間依車程調整）</span></span>
+            </li>
+            <li>
+              <span class="time">17:30</span>
+              <span class="icon">🚌</span>
+              <span class="text"><b>返回京都出發地</b><span class="note">預估抵達 17:30–18:00</span></span>
+            </li>
+          </ul>
+          <div class="hotel-footer"><span class="icon">🏨</span> 住宿：Richmond Premier Hotel Kyoto Shijo</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Day 5 -->
+    <section class="day-card">
+      <button class="day-header">
+        <div class="date-badge"><span class="md">7/19</span><span class="wd">六</span></div>
+        <div class="day-title-wrap">
+          <h2>嵐山尾聲・宇治茶趣・返程</h2>
+          <p class="summary-line">保津川遊船 ･ 祐齋亭 ･ Snow Peak ･ 宇治 ･ Alpen ･ KIX→TPE</p>
+        </div>
+        <span class="chevron">⌾</span>
+      </button>
+      <div class="day-content">
+        <div class="day-content-inner">
+          <ul class="detail-list">
+            <li>
+              <span class="time">09:00</span>
+              <span class="icon">⛵</span>
+              <span class="text"><b><a href="https://www.hozugawakudari.jp/" target="_blank" rel="noopener">保津川遊船體驗</a></b><span class="note">出發地點：保津川乘船場口（京都府龜岡市保津町上中島2）</span></span>
+            </li>
+            <li>
+              <span class="time">12:00</span>
+              <span class="icon">🏠</span>
+              <span class="text"><b><a href="https://yusai.kyoto/" target="_blank" rel="noopener">嵐山祐齋亭（見學）</a></b><span class="note">入館時段 12:00–12:30</span></span>
+            </li>
+            <li>
+              <span class="time">約13:00</span>
+              <span class="icon">🏕</span>
+              <span class="text"><b><a href="https://www.snowpeak.co.jp/landstation/arashiyama/" target="_blank" rel="noopener">Snow Peak LAND STATION 京都嵐山</a></b><span class="note">緊鄰嵐山龜山天龍寺仁和寺一帶，選物店、咖啡廳，10:00–19:00，就在嵐山範圍內</span></span>
+            </li>
+            <li>
+              <span class="time">約14:00</span>
+              <span class="icon">🚇</span>
+              <span class="text"><b>移動：嵐山 → 宇治</b><span class="note">車程約 45–60 分鐘，建議搭乘車接駁車</span></span>
+            </li>
+            <li>
+              <span class="time">約15:00</span>
+              <span class="icon">🍵</span>
+              <span class="text"><b><a href="https://tokichi.jp/" target="_blank" rel="noopener">中村藤吉本店</a></b><span class="note">宇治川旁的老建築，木構庭院，抹茶甜點，平等院表參道步行範圍</span></span>
+            </li>
+            <li>
+              <span class="time">約15:35</span>
+              <span class="icon">🏺</span>
+              <span class="text"><b><a href="https://uji-chazuna.kyoto/" target="_blank" rel="noopener">茶づな（「茶と宇治のまち歴史公園」）</a></b><span class="note">2021年開幕，宇治川旁清水模現代建築，簡約風宇治茶展示館</span></span>
+            </li>
+            <li>
+              <span class="time">約16:05</span>
+              <span class="icon">☕</span>
+              <span class="text"><b><a href="https://tabelog.com/en/kyoto/A2607/A260701/26028720/" target="_blank" rel="noopener">星巴克 宇治平等院表參道店</a></b><span class="note">落地窗，抹茶系列，氣氛寧靜</span></span>
+            </li>
+            <li>
+              <span class="time">約16:30</span>
+              <span class="icon">🏡</span>
+              <span class="text"><b><a href="https://www.itohkyuemon.co.jp/corporate/shop/uji/" target="_blank" rel="noopener">伊藤久右衛門 宇治本店</a></b><span class="note">抹茶甜點、茶葉，以上皆在表參道步行範圍內，可依現場時間彈性有所選</span></span>
+            </li>
+            <li>
+              <span class="time">約17:15</span>
+              <span class="icon">🏪</span>
+              <span class="text"><b><a href="https://www.alpen-group.jp/outdoors/kyotouji/" target="_blank" rel="noopener">Alpen Outdoors 京都宇治店</a></b><span class="note">宇治市槇島町大川16，關西最大戶外用品店，10:00–20:00，距表參道約10分鐘車程</span></span>
+            </li>
+            <li>
+              <span class="time">晚上</span>
+              <span class="icon">🚃</span>
+              <span class="text"><b><a href="https://www.jr-odekake.net/train/haruka/" target="_blank" rel="noopener">JR特急 Haruka（京都站 → 關西機場）</a></b><span class="note">車票已綁定 JR-West 網站，⚠️ 尚未預約 Haruka 車次時間。宇治→京都站約20分鐘</span></span>
+            </li>
+            <li>
+              <span class="time">23:35</span>
+              <span class="icon">✈️</span>
+              <span class="text"><b>KIX 出發 → 01:30 抵達 TPE</b></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  點擊每日標題可展開，收合詳細資訊 ・ 每點名稱可點擊連結參考官方資訊 ・ 內容以當前為最新版
+</footer>
+
+<script>
+  document.querySelectorAll('.day-header').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      btn.closest('.day-card').classList.toggle('open');
+    });
+  });
+  document.getElementById('expandAllBtn').addEventListener('click', function(){
+    document.querySelectorAll('.day-card').forEach(function(c){ c.classList.add('open'); });
+  });
+  document.getElementById('collapseAllBtn').addEventListener('click', function(){
+    document.querySelectorAll('.day-card').forEach(function(c){ c.classList.remove('open'); });
+  });
+</script>
+
+</body>
+</html>
