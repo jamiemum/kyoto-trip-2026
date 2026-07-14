@@ -6,14 +6,14 @@
 <title>京都行程 7/15–7/19</title>
 <style>
   :root{
-    --bg:#f6f1e7;
-    --card:#fffdf9;
-    --ink:#242236;
-    --ink-soft:#5b5770;
-    --accent:#b1443e;
-    --accent-soft:#e8c9c2;
-    --line:#e6dcc8;
-    --green:#6f8560;
+    --bg:#fbf7f2;
+    --card:#ffffff;
+    --ink:#1a1a1a;
+    --ink-soft:#6b6b6b;
+    --accent:#c8202f;
+    --accent-soft:#f7dcdc;
+    --line:#e8dede;
+    --green:#b8892f;
   }
   *{box-sizing:border-box;}
   body{
@@ -25,35 +25,63 @@
     padding-bottom:60px;
   }
   .hero{
-    background:linear-gradient(160deg,#242236,#3a3457);
-    color:#fdf8ef;
-    padding:36px 20px 28px;
+    background:#ffffff;
+    color:#1a1a1a;
+    padding:40px 20px 32px;
     text-align:center;
     position:relative;
     overflow:hidden;
+    border-bottom:3px solid var(--ink);
   }
   .hero::before{
     content:"";
     position:absolute;
-    inset:0;
-    background:radial-gradient(circle at 15% 20%, rgba(177,68,62,0.35), transparent 40%),
-               radial-gradient(circle at 85% 80%, rgba(111,133,96,0.3), transparent 45%);
+    left:50%;
+    bottom:-120px;
+    transform:translateX(-50%);
+    width:320px;
+    height:320px;
+    border-radius:50%;
+    background:repeating-conic-gradient(from 0deg, var(--accent) 0deg 9deg, transparent 9deg 18deg);
+    opacity:0.16;
+    pointer-events:none;
   }
   .hero-inner{position:relative;z-index:1;}
+  .hanko{
+    position:absolute;
+    top:14px;
+    right:18px;
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:var(--accent);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    font-weight:700;
+    transform:rotate(8deg);
+    box-shadow:0 2px 4px rgba(0,0,0,0.2);
+    z-index:2;
+  }
   .hero .eyebrow{
-    font-size:13px;
-    letter-spacing:2px;
-    opacity:0.75;
-    margin-bottom:6px;
+    font-size:12px;
+    letter-spacing:3px;
+    color:var(--accent);
+    font-weight:700;
+    margin-bottom:8px;
   }
   .hero h1{
-    margin:0 0 8px;
-    font-size:28px;
-    letter-spacing:1px;
+    margin:0 0 10px;
+    font-size:30px;
+    letter-spacing:2px;
+    font-weight:800;
   }
   .hero .dates{
-    font-size:15px;
-    opacity:0.85;
+    font-size:14px;
+    color:var(--ink-soft);
+    letter-spacing:0.5px;
   }
   .controls{
     max-width:720px;
@@ -89,10 +117,10 @@
   .day-card{
     background:var(--card);
     border:1px solid var(--line);
-    border-radius:16px;
+    border-radius:10px;
     margin-bottom:14px;
     overflow:hidden;
-    box-shadow:0 1px 3px rgba(36,34,54,0.05);
+    box-shadow:0 1px 4px rgba(0,0,0,0.06);
   }
   .day-header{
     width:100%;
@@ -111,14 +139,15 @@
     flex:0 0 auto;
     width:56px;
     height:56px;
-    border-radius:14px;
-    background:var(--accent-soft);
-    color:var(--accent);
+    border-radius:50%;
+    background:var(--accent);
+    color:#fff;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
     font-weight:700;
+    box-shadow:0 1px 3px rgba(0,0,0,0.15);
   }
   .date-badge .md{font-size:16px;line-height:1.1;}
   .date-badge .wd{font-size:11px;opacity:0.8;font-weight:500;}
@@ -202,8 +231,9 @@
   .hotel-footer{
     margin:6px 18px 16px;
     padding:12px 14px;
-    background:#f4efe4;
-    border-radius:10px;
+    background:var(--accent-soft);
+    border-left:3px solid var(--accent);
+    border-radius:6px;
     font-size:13.5px;
     display:flex;
     align-items:center;
@@ -223,6 +253,7 @@
 <body>
 
 <div class="hero">
+  <div class="hanko">京</div>
   <div class="hero-inner">
     <div class="eyebrow">KYOTO TRIP</div>
     <h1>京都五日行</h1>
@@ -314,7 +345,7 @@
             <li>
               <span class="time">16:30</span>
               <span class="icon">🍽</span>
-              <span class="text"><b><a href="https://www.touyoutei.co.jp/shop_post/honten/" target="_blank" rel="noopener">東洋亭 本店（北山）</a></b><span class="note">地鐵北山站步行3分鐘，招牌漢堡肉整顆蕃茄，11:00–22:00（L.O.21:00）；17:00 前入場享便宜午餐menu</span></span>
+              <span class="text"><b><a href="https://www.touyoutei.co.jp/shop_post/honten/" target="_blank" rel="noopener">東洋亭 本店（北山）</a></b><span class="note">✅ 已預約 16:30，地鐵北山站步行3分鐘，招牌漢堡肉整顆蕃茄，11:00–22:00（L.O.21:00）</span></span>
             </li>
           </ul>
           <div class="hotel-footer"><span class="icon">🏨</span> 住宿：Mystays Kyoto Shijo Hotel</div>
@@ -328,7 +359,7 @@
         <div class="date-badge"><span class="md">7/16</span><span class="wd">三</span></div>
         <div class="day-title-wrap">
           <h2>飛奔滋賀大自然</h2>
-          <p class="summary-line">進進堂早餐 ･ 白鬚神社 ･ 琵琶湖景觀台 ･ 滿月寺浮御堂 ･ La Collina</p>
+          <p class="summary-line">飯店早餐（茶々） ･ 白鬚神社 ･ 琵琶湖景觀台 ･ 滿月寺浮御堂 ･ La Collina</p>
         </div>
         <span class="chevron">⌾</span>
       </button>
@@ -337,8 +368,8 @@
           <ul class="detail-list">
             <li>
               <span class="time">約08:00</span>
-              <span class="icon">🥐</span>
-              <span class="text"><b>進進堂 四条烏丸店</b><span class="note">LAQUE四条烏丸 B1F，緊鄰地鐵四条站直結，08:00–20:30，麵包量多，預約早餐後步行，地鐵到京都站八條口約20分鐘，時間剛好配09:05開車</span></span>
+              <span class="icon">🍳</span>
+              <span class="text"><b><a href="https://maps.app.goo.gl/TZ6hFECj3hchVsxG6" target="_blank" rel="noopener">京和食だいにんぐ 茶々（飯店內）</a></b><span class="note">Mystays京都四条酒店1F，飯店已含早餐（和洋食吃到飽），不用外出，吃完直接步行／搭地鐵到京都站八條口約20分鐘，時間剛好接09:05集合</span></span>
             </li>
             <li>
               <span class="time">09:05</span>
